@@ -1,0 +1,51 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v4.4.0
+  hooks:
+  - id: check-added-large-files
+  - id: check-case-conflict
+  - id: check-executables-have-shebangs
+  - id: check-shebang-scripts-are-executable
+  - id: check-yaml
+    args: [--allow-multiple-documents]
+  - id: detect-private-key
+  - id: end-of-file-fixer
+  - id: forbid-submodules
+  - id: mixed-line-ending
+    exclude: >
+      (?x)^(
+          .*cs.meta|
+          .*.css|
+          .*.meta|
+          .*.mat|
+          .*.preset|
+          .*.lighting|
+          .*.dae
+      )$
+    args: [ --fix=lf ]
+  - id: no-commit-to-branch
+  - id: trailing-whitespace
+- repo: https://github.com/tekwizely/pre-commit-golang
+  rev: v1.0.0-rc.1
+  hooks:
+  - id: go-mod-tidy
+  - id: go-fmt
+    args: [ -w, -d=false ]
+  - id: go-vet-mod
+    args: [ -json ]
+- repo: local
+  hooks:
+  - id: unit_test
+    stages: [ "commit" ]
+    name: Unit Tests
+    language: golang
+    entry: bash -c 'make unit_test'
+    require_serial: true
+  - id: integration_test
+    stages: [ "push" ]
+    name: Integration Tests
+    language: golang
+    entry: bash -c 'make integration_test'
+    require_serial: true
