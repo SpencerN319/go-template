@@ -1,16 +1,24 @@
 package main
 
 import (
+	"log/slog"
+	"os"
+
 	"github.com/SpencerN319/go-template/env"
-	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
 )
 
 func init() {
-	logLevel, _ := zerolog.ParseLevel(env.Getenv("LOG_LEVEL", "0"))
-	zerolog.SetGlobalLevel(logLevel)
+	parseLogLevel := func(l string) slog.Level {
+		switch l {
+		default:
+			return slog.LevelInfo
+		}
+	}
+	slog.SetDefault(slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+		Level: parseLogLevel(env.Getenv("LOG_LEVEL", "INFO")),
+	})))
 }
 
 func main() {
-	log.Print(hello())
+	slog.Info(hello())
 }
