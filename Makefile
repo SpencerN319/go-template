@@ -29,39 +29,42 @@ help:
 .PHONY: build
 ## Build local environment
 build:
-	docker-compose build
+	@docker-compose build
 
 .PHONY: up
 ## Run local environment
 up:
-	docker-compose up --wait --build
+	@docker-compose up --wait --build
 
 .PHONY: logs
 ## Follow logs
 logs:
-	docker logs -f core
+	@docker logs -f core
 
 .PHONY: down
 ## Stop local environment
 down:
-	docker-compose down -v
+	@docker-compose down -v
 
 .PHONY: clean
 ## Remove dangling docker images (i.e. untagged "<none>" images)
 clean:
-	docker rmi $(shell docker images -f "dangling=true" -q)
+	@go clean -testcache
+	@docker rmi $(shell docker images -f "dangling=true" -q)
 
 .PHONY: integration_test
 ## Run local integration tests
 integration_test:
 	@echo '${GREEN}Integration Tests${RESET}'
-	docker-compose down -v > /dev/null 2>&1
-	docker-compose up --wait > /dev/null 2>&1
-	$(call run_tests,integration)
-	docker-compose down -v /dev/null 2>&1
+	@docker-compose down -v > /dev/null 2>&1
+	@docker-compose up --wait > /dev/null 2>&1
+	@$(call run_tests,integration)
+	@docker-compose down -v /dev/null 2>&1
 
 .PHONY: unit_test
 ## Run unit tests & store coverage log, Server and Client coverage generated separately
 unit_test:
 	@echo '${GREEN}Unit Tests${RESET}'
-	$(call run_tests,unit)
+	@go test -race --tags=unit ./... -coverprofile unit_coverage.out
+	@go tool cover -html=unit_coverage.out
+	@rm unit_coverage.out

@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/SpencerN319/go-template/env"
+	"github.com/SpencerN319/go-template/hello"
 )
 
 func init() {
@@ -20,5 +21,5 @@ func init() {
 }
 
 func main() {
-	slog.Info(hello())
+	slog.Info(hello.Hello())
 }
