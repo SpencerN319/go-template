@@ -36,6 +36,11 @@ build:
 up:
 	@docker-compose up --wait --build
 
+.PHONY: watch
+## Watch for file changes and rebuild image
+watch:
+	@docker-compose watch --no-up
+
 .PHONY: logs
 ## Follow logs
 logs:

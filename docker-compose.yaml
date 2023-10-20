@@ -8,3 +8,10 @@ services:
       dockerfile: Dockerfile
       args:
         TARGET: app
+    develop:
+      watch:
+      - action: rebuild
+        files:
+        - ./**/*.go
+        - ./go.mod
+        - ./go.sum
