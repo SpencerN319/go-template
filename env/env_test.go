@@ -4,7 +4,7 @@ package env
 
 import "testing"
 
-func TestGetenv(t *testing.T) {
+func TestFallbackGetenv(t *testing.T) {
 	tc := []struct {
 		description string
 		key         string
@@ -14,17 +14,17 @@ func TestGetenv(t *testing.T) {
 	}{
 		{
 			description: "existing env var should return var",
-			key: "0",
-			val: "zero",
-			fallback: "",
-			exp: "zero",
+			key:         "0",
+			val:         "zero",
+			fallback:    "",
+			exp:         "zero",
 		},
 		{
 			description: "non-existent env var should return fallback",
-			key: "",
-			val: "",
-			fallback: "one",
-			exp: "one",
+			key:         "",
+			val:         "",
+			fallback:    "one",
+			exp:         "one",
 		},
 	}
 
@@ -32,13 +32,13 @@ func TestGetenv(t *testing.T) {
 		if c.key != "" {
 			t.Setenv(c.key, c.val)
 		}
-		
-		v := Getenv(c.key, c.fallback)
+
+		v := FallbackGetenv(c.key, c.fallback)
 		if c.val != "" && c.val != v {
 			t.Errorf("[%d] %s: expected val %s; received %s", i, c.description, c.val, v)
 		}
 		if c.fallback != "" && c.fallback != v {
-			t.Errorf("[%d] %s: expected fallback %s; received %s", i, c.description, c.fallback, v)	
+			t.Errorf("[%d] %s: expected fallback %s; received %s", i, c.description, c.fallback, v)
 		}
 	}
 }

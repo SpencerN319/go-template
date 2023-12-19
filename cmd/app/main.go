@@ -16,7 +16,8 @@ func init() {
 		}
 	}
 	slog.SetDefault(slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
-		Level: parseLogLevel(env.Getenv("LOG_LEVEL", "INFO")),
+		AddSource: parseLogLevel(env.FallbackGetenv("LOG_LEVEL", "INFO")) == slog.LevelDebug,
+		Level:     parseLogLevel(env.FallbackGetenv("LOG_LEVEL", "INFO")),
 	})))
 }
 

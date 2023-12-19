@@ -41,15 +41,15 @@ repos:
   - id: golangci-lint
 - repo: local
   hooks:
-  - id: unit_test
+  - id: unit-test
     stages: [ "commit" ]
     name: Unit Tests
     language: golang
-    entry: bash -c 'make unit_test'
+    entry: bash -c 'make unit-test'
     require_serial: true
-  - id: integration_test
+  - id: integration-test
     stages: [ "push" ]
     name: Integration Tests
     language: golang
-    entry: bash -c 'make integration_test'
+    entry: bash -c 'make integration-test'
     require_serial: true

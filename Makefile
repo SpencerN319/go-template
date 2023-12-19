@@ -41,11 +41,6 @@ up:
 watch:
 	@docker-compose watch --no-up
 
-.PHONY: logs
-## Follow logs
-logs:
-	@docker logs -f core
-
 .PHONY: down
 ## Stop local environment
 down:
@@ -55,21 +50,24 @@ down:
 ## Remove dangling docker images (i.e. untagged "<none>" images)
 clean:
 	@go clean -testcache
+	@$(shell rm -rf target/*)
 	@docker rmi $(shell docker images -f "dangling=true" -q)
 
-.PHONY: integration_test
+.PHONY: integration-test
 ## Run local integration tests
-integration_test:
+integration-test:
 	@echo '${GREEN}Integration Tests${RESET}'
+	@go clean -testcache
 	@docker-compose down -v > /dev/null 2>&1
 	@docker-compose up --wait > /dev/null 2>&1
 	@$(call run_tests,integration)
 	@docker-compose down -v /dev/null 2>&1
 
-.PHONY: unit_test
+.PHONY: unit-test
 ## Run unit tests & store coverage log, Server and Client coverage generated separately
-unit_test:
+unit-test:
 	@echo '${GREEN}Unit Tests${RESET}'
+	@go clean -testcache
 	@go test -race --tags=unit ./... -coverprofile unit_coverage.out
 	@go tool cover -html=unit_coverage.out
 	@rm unit_coverage.out
