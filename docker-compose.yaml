@@ -6,8 +6,19 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      args:
-        TARGET: app
+      target: build-stage
+    entrypoint: /template
+    environment:
+      ADDR: ":8080"
+      LOG_LEVEL: DEBUG
+    healthcheck:
+      test: curl --fail localhost:8080/health || exit 1
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 2s
+    ports:
+    - "8080:8080"
     develop:
       watch:
       - action: rebuild

@@ -1,18 +1,23 @@
-FROM golang:1.21-alpine
+FROM golang:1.22 AS build-stage
 
-ARG TARGET=app
+WORKDIR /app
 
-RUN addgroup -S nonroot && \
-    adduser -S nonroot -G nonroot
+COPY go.mod go.sum ./
+RUN go mod download
 
-WORKDIR /usr/src/app
+COPY . .
+RUN CGO_ENABLED=0 GOOS=linux go build -o /template -ldflags '-w -s' /app/cmd/app
 
-COPY --chown=nonroot:nonroot go.* .
-RUN go mod download && go mod verify
 
-COPY --chown=nonroot:nonroot . .
-RUN CGO_ENABLED=0 go build -o /usr/local/bin/app -ldflags '-w -s' /usr/src/app/cmd/${TARGET}
+# release image
+FROM gcr.io/distroless/base-debian12 AS release-stage
 
-USER nonroot
+WORKDIR /
 
-CMD ["app"]
+COPY --from=build-stage /template /template
+
+EXPOSE 8080
+
+USER nonroot:nonroot
+
+ENTRYPOINT ["/template"]

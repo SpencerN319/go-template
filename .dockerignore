@@ -6,5 +6,6 @@
 
 # Go files
 !cmd/
-!env/
-!hello/
+!configs/
+!internal/
+!pkg/

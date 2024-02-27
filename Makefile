@@ -3,12 +3,6 @@ GREEN  := $(shell tput -Txterm setaf 2)
 YELLOW := $(shell tput -Txterm setaf 3)
 RESET  := $(shell tput -Txterm sgr0)
 
-define run_tests
-	go test --tags=$(1) ./... -coverprofile $(1)_coverage.out
-	go tool cover -html=$(1)_coverage.out
-	rm $(1)_coverage.out
-endef
-
 .PHONY: help
 help:
 	@echo ''
@@ -58,16 +52,15 @@ clean:
 integration-test:
 	@echo '${GREEN}Integration Tests${RESET}'
 	@go clean -testcache
-	@docker-compose down -v > /dev/null 2>&1
-	@docker-compose up --wait > /dev/null 2>&1
-	@$(call run_tests,integration)
-	@docker-compose down -v /dev/null 2>&1
+	@go test -race --tags=integration -timeout 30s -v -coverprofile integration_coverage.out ./...
+	@go tool cover -html=integration_coverage.out
+	@rm integration_coverage.out
 
 .PHONY: unit-test
 ## Run unit tests & store coverage log, Server and Client coverage generated separately
 unit-test:
 	@echo '${GREEN}Unit Tests${RESET}'
 	@go clean -testcache
-	@go test -race --tags=unit ./... -coverprofile unit_coverage.out
+	@go test -race --tags=unit -timeout 30s -coverprofile unit_coverage.out ./...
 	@go tool cover -html=unit_coverage.out
 	@rm unit_coverage.out
