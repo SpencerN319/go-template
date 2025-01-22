@@ -23,22 +23,17 @@ help:
 .PHONY: build
 ## Build local environment
 build:
-	@docker-compose build
+	@docker compose build
 
 .PHONY: up
 ## Run local environment
 up:
-	@docker-compose up --wait --build
-
-.PHONY: watch
-## Watch for file changes and rebuild image
-watch:
-	@docker-compose watch --no-up
+	@docker compose up --wait
 
 .PHONY: down
 ## Stop local environment
 down:
-	@docker-compose down -v
+	@docker compose down
 
 .PHONY: clean
 ## Remove dangling docker images (i.e. untagged "<none>" images)
@@ -46,6 +41,7 @@ clean:
 	@go clean -testcache
 	@$(shell rm -rf target/*)
 	@docker rmi $(shell docker images -f "dangling=true" -q)
+	@docker compose down -v
 
 .PHONY: integration-test
 ## Run local integration tests

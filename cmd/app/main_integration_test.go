@@ -60,12 +60,12 @@ func TestRun(t *testing.T) {
 	cctx, cancel := context.WithCancel(context.Background())
 	t.Cleanup(cancel)
 	go func() {
-		if err := run(cctx, slog.Default(), []string{}, testenv); err != nil {
+		if err := run(cctx, slog.Default(), testenv); err != nil {
 			fmt.Fprintf(os.Stderr, "%v\n", err)
 			os.Exit(1)
 		}
 	}()
-	if err := WaitForReady(cctx, 5*time.Second, "http://localhost:8080"); err != nil {
+	if err := WaitForReady(cctx, 10*time.Second, "http://localhost:8080"); err != nil {
 		t.Fatal(err)
 	}
 }

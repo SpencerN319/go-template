@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: Dockerfile
       target: build-stage
-    entrypoint: /template
+    entrypoint: /app
     environment:
       ADDR: ":8080"
       LOG_LEVEL: DEBUG
@@ -19,10 +19,10 @@ services:
       start_period: 2s
     ports:
     - "8080:8080"
-    develop:
-      watch:
-      - action: rebuild
-        files:
-        - ./**/*.go
-        - ./go.mod
-        - ./go.sum
+    # develop:
+    #   watch:
+    #   - action: rebuild
+    #     files:
+    #     - ./**/*.go
+    #     - ./go.mod
+    #     - ./go.sum

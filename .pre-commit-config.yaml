@@ -2,7 +2,7 @@
 # See https://pre-commit.com/hooks.html for more hooks
 repos:
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v4.5.0
+  rev: v5.0.0
   hooks:
   - id: check-added-large-files
   - id: check-case-conflict
@@ -36,19 +36,19 @@ repos:
   - id: go-vet-mod
     args: [ -json ]
 - repo: https://github.com/golangci/golangci-lint
-  rev: v1.54.2
+  rev: v1.63.4
   hooks:
   - id: golangci-lint
 - repo: local
   hooks:
   - id: unit-test
-    stages: [ "commit" ]
+    stages: [ "pre-commit" ]
     name: Unit Tests
     language: golang
     entry: bash -c 'make unit-test'
     require_serial: true
   - id: integration-test
-    stages: [ "push" ]
+    stages: [ "pre-push" ]
     name: Integration Tests
     language: golang
     entry: bash -c 'make integration-test'

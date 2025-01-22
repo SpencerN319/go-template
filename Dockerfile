@@ -1,23 +1,23 @@
-FROM golang:1.22 AS build-stage
+FROM golang:1.23 AS build-stage
 
-WORKDIR /app
+ARG TARGET
+
+WORKDIR /usr/src/app
 
 COPY go.mod go.sum ./
-RUN go mod download
+RUN go mod download && go mod verify
 
 COPY . .
-RUN CGO_ENABLED=0 GOOS=linux go build -o /template -ldflags '-w -s' /app/cmd/app
+RUN CGO_ENABLED=0 GOOS=linux go build -o /app -ldflags '-w -s' /usr/src/app/cmd/${TARGET}
 
 
 # release image
-FROM gcr.io/distroless/base-debian12 AS release-stage
+FROM gcr.io/distroless/base-debian12:nonroot AS release-stage
 
 WORKDIR /
 
-COPY --from=build-stage /template /template
-
-EXPOSE 8080
+COPY --from=build-stage /usr/local/bin/app /app
 
 USER nonroot:nonroot
 
-ENTRYPOINT ["/template"]
+ENTRYPOINT ["/app"]
