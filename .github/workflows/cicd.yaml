@@ -30,7 +30,7 @@ jobs:
       - name: run tests
         run: go test -race --tags=unit -timeout 30s ./...
       - name: static check
-        uses: dominikh/staticcheck-actions@v1
+        uses: dominikh/staticcheck-action@v1
         with:
           version: "latest"
           install-go: false
