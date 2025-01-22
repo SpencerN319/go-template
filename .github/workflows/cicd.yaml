@@ -29,3 +29,8 @@ jobs:
         run: go mod download && go mod verify
       - name: run tests
         run: go test -race --tags=unit -timeout 30s ./...
+      - name: static check
+        uses: dominikh/staticcheck-actions@v1
+        with:
+          version: "latest"
+          install-go: false
